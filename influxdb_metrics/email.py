@@ -5,6 +5,7 @@ from django.core.mail.backends.smtp import EmailBackend
 from django.conf import settings
 
 from .loader import write_points
+from .utils import build_tags
 
 
 class InfluxDbEmailBackend(EmailBackend):
@@ -18,7 +19,7 @@ class InfluxDbEmailBackend(EmailBackend):
         if num_sent:
             data = [{
                 'measurement': 'django_email_sent',
-                'tags': {'host': settings.INFLUXDB_TAGS_HOST, },
+                'tags': build_tags(),
                 'fields': {'value': num_sent, },
                 'time': timezone.now().isoformat(),
             }]

@@ -19,6 +19,7 @@ from tld import get_tld
 from tld.exceptions import TldBadUrl, TldDomainNotFound, TldIOError
 
 from .loader import write_points
+from .utils import build_tags
 
 if DJANGO_VERSION < (1, 10):
     def is_user_authenticated(user):
@@ -95,8 +96,7 @@ class InfluxDBRequestMiddleware(MiddlewareMixin):
 
             data = [{
                 'measurement': 'django_request',
-                'tags': {
-                    'host': settings.INFLUXDB_TAGS_HOST,
+                'tags': build_tags({
                     'is_ajax': is_ajax,
                     'is_authenticated': is_authenticated,
                     'is_staff': is_staff,
@@ -109,7 +109,7 @@ class InfluxDBRequestMiddleware(MiddlewareMixin):
                     'full_path': url,
                     'path': request.path,
                     'campaign': campaign,
-                },
+                }),
                 'fields': {'value': ms, },
             }]
             write_points(data)

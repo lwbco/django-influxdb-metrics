@@ -7,13 +7,14 @@ from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 
 from .loader import write_points
+from .utils import build_tags
 
 
 @receiver(user_logged_in)  # pragma: no cover
 def user_logged_in_handler(sender, **kwargs):
     data = [{
         'measurement': 'django_auth_user_login',
-        'tags': {'host': settings.INFLUXDB_TAGS_HOST, },
+        'tags': build_tags(),
         'fields': {'value': 1, },
         'time': timezone.now().isoformat(),
     }]

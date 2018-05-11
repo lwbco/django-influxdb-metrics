@@ -1,5 +1,7 @@
 """Utilities for working with influxdb."""
 import logging
+import os
+import socket
 from threading import Thread
 
 from django.conf import settings
@@ -8,6 +10,24 @@ from influxdb import InfluxDBClient
 
 
 logger = logging.getLogger(__name__)
+
+
+def build_tags(tags=None):
+    final_tags = {}
+
+    final_tags.update({
+        'host': getattr(settings, 'INFLUXDB_TAGS_HOST', ''),
+        'environment': getattr(settings, 'ENVIRONMENT', os.environ.get('ENV', 'dev')),
+        'project': getattr(settings, 'PROJECT_MODULE', os.environ.get('PROJECT', '')),
+        'service': os.environ.get('SERVICE', ''),
+        'container': socket.gethostname(),
+    })
+
+    final_tags.update(getattr(settings, 'INFLUXDB_EXTRA_TAGS', {}))
+
+    final_tags.update(tags or {})
+
+    return {k: v for k, v in final_tags.items() if v}
 
 
 def get_client():
