@@ -14,14 +14,32 @@ if getattr(settings, 'INFLUXDB_USE_CELERY', False):
 else:
     write_points = write_points_normal
 
-def log_startup():
+def log_metric(measurement, fields=None, tags=None):
     from .utils import build_tags
     data = [{
-        'measurement': 'django_entrypoint',
-        'tags': build_tags(),
-        'fields': {'value': 1, },
+        'measurement': measurement,
+        'fields': fields or {'value': 1}, 
+        'tags': build_tags(tags),
     }]
-    write_points(data)
+    return write_points(data)
+
+class TimingMetric(object):
+    def __init__(self, measurement, tags=None):
+        self.measurement = measurement
+        self.fields = {'count': 1}
+        self.tags = tags or {}
+
+    def __enter__(self):
+        import time
+        self.start_time = time.time()
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        import time
+        self.stop_time = time.time()
+        self.fields['value'] = self.elapsed = self.stop_time - self.start_time
+        self.tags['success'] = str(bool(exc_type))
+        self.tags['exception'] = str(exc_type or '')
+        log_metric(self.measurement, self.fields, self.tags)
 
 if getattr(settings, 'INFLUXDB_LOG_ENTRYPOINT', True):
-    log_startup()
+    log_metric('django_entrypoint')
