@@ -27,7 +27,7 @@ To get the latest commit from GitHub
 
 .. code-block:: bash
 
-    pip install -e git+git://github.com/bitmazk/django-influxdb-metrics.git#egg=influxdb_metrics
+    pip install -e git+git://github.com/lwbco/django-influxdb-tagged-metrics.git#egg=influxdb_metrics
 
 Add ``influxdb_metrics`` to your ``INSTALLED_APPS``
 
