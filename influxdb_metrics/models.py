@@ -26,7 +26,7 @@ def user_post_delete_handler(sender, **kwargs):
     total = get_user_model().objects.all().count()
     data = [{
         'measurement': 'django_auth_user_delete',
-        'tags': {'host': settings.INFLUXDB_TAGS_HOST, },
+        'tags': build_tags(),
         'fields': {'value': 1, },
         'time': timezone.now().isoformat(),
     }]
@@ -34,7 +34,7 @@ def user_post_delete_handler(sender, **kwargs):
 
     data = [{
         'measurement': 'django_auth_user_count',
-        'tags': {'host': settings.INFLUXDB_TAGS_HOST, },
+        'tags': build_tags(),
         'fields': {'value': total, },
         'time': timezone.now().isoformat(),
     }]
@@ -50,7 +50,7 @@ def user_post_save_handler(**kwargs):
         total = get_user_model().objects.all().count()
         data = [{
             'measurement': 'django_auth_user_create',
-            'tags': {'host': settings.INFLUXDB_TAGS_HOST, },
+            'tags': build_tags(),
             'fields': {'value': 1, },
             'time': timezone.now().isoformat(),
         }]
@@ -58,7 +58,7 @@ def user_post_save_handler(**kwargs):
 
         data = [{
             'measurement': 'django_auth_user_count',
-            'tags': {'host': settings.INFLUXDB_TAGS_HOST, },
+            'tags': build_tags(),
             'fields': {'value': total, },
             'time': timezone.now().isoformat(),
         }]
