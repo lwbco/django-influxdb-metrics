@@ -17,8 +17,10 @@ def build_tags(tags=None):
 
     final_tags.update({
         'host': getattr(settings, 'INFLUXDB_TAGS_HOST', ''),
-        'environment': getattr(settings, 'ENVIRONMENT', os.environ.get('ENV', 'dev')),
-        'project': getattr(settings, 'PROJECT_MODULE', os.environ.get('PROJECT', '')),
+        'environment': getattr(settings, 'ENVIRONMENT',
+                               os.environ.get('ENV', 'dev')),
+        'project': getattr(settings, 'PROJECT_MODULE',
+                           os.environ.get('PROJECT', '')),
         'service': os.environ.get('SERVICE', ''),
         'container': socket.gethostname(),
     })

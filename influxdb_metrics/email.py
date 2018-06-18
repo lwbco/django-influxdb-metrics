@@ -2,7 +2,6 @@
 from django.utils import timezone
 
 from django.core.mail.backends.smtp import EmailBackend
-from django.conf import settings
 
 from .loader import write_points
 from .utils import build_tags
