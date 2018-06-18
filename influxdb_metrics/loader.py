@@ -35,7 +35,7 @@ class TimingMetric(object):
 
     def __enter__(self):
         self.start_time = time.time()
-        self.stop_type = None
+        self.stop_time = None
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
